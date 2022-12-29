@@ -12,8 +12,8 @@ module WechatPayHelper # :nodoc:
       params.sort.map { |key, value| "#{key}=#{value}" }.join('&')
     end
 
-    def make_request(method:, path:, for_sign: '', payload: {}, extra_headers: {})
-      authorization = WechatPay::Sign.build_authorization_header(method, path, for_sign)
+    def make_request(method:, path:, for_sign: '', payload: {}, extra_headers: {}, options: {})
+      authorization = WechatPay::Sign.build_authorization_header(method, path, for_sign, options)
       headers = {
         'Authorization' => authorization,
         'Content-Type' => 'application/json',
