@@ -344,6 +344,20 @@ module WechatPay
         }
       )
     end
+    
+    # 商户转账到零钱
+    def self.batches(params, options = {})
+      url = '/v3/transfer/batches'
+      payload_json = params.merge(appid: options.delete(:appid)).to_json
+      method = 'POST'
+      make_request(
+        method: method,
+        for_sign: payload_json,
+        payload: payload_json,
+        path: url,
+        options: options
+      )
+    end
 
     class << self
       private
