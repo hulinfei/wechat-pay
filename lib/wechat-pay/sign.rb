@@ -199,16 +199,18 @@ module WechatPay
       # # Result
       # "WECHATPAY2-SHA256-RSA2048 mchid=\"16000000\",nonce_str=\"42ac357637f9331794e0c6fb3b3de048\",serial_no=\"0254A801C0\",signature=\"WBJaWlVFur5OGQ/E0ZKIlSDhR8WTNrkW2oCECF3Udrh8BVlnfYf5N5ROeOt9PBxdwD0+ufFQANZKugmXDNat+sFRY2DrIzdP3qYvFIzaYjp6QEtB0UPzvTgcLDULGbwCSTNDxvKRDi07OXPFSmVfmA5SbpbfumgjYOfzt1wcl9Eh+/op/gAB3N010Iu1w4OggR78hxQvPb9GIscuKHjaUWqqwf6v+p3/b0tiSO/SekJa3bMKPhJ2wJj8utBHQtbGO+iUQj1n90naL25MNJUM2XYocv4MasxZZgZnV3v1dtRvFkVo0ApqFyDoiRndr1Q/jPh+wmsb80LuhZ1S4eNfew==\",timestamp=\"1620571488\""
       # ```
-      def build_authorization_header(method, url, json_body)
+      def build_authorization_header(method, url, json_body, options = {})
         timestamp = Time.now.to_i
         nonce_str = SecureRandom.hex
         string = build_string(method, url, timestamp, nonce_str, json_body)
         signature = sign_string(string)
+        mch_id = options.delete(:meh_id) || WechatPay.mch_id
+        apiclient_serial_no = options.delete(:apiclient_serial_no) || WechatPay.apiclient_serial_no
 
         params = {
-          mchid: WechatPay.mch_id,
+          mchid: mch_id,
           nonce_str: nonce_str,
-          serial_no: WechatPay.apiclient_serial_no,
+          serial_no: apiclient_serial_no,
           signature: signature,
           timestamp: timestamp
         }
