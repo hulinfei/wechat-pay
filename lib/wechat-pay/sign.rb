@@ -220,7 +220,7 @@ module WechatPay
         "WECHATPAY2-SHA256-RSA2048 #{params_string}"
       end
 
-      def sign_string(string, options: {})
+      def sign_string(string, options)
         apiclient_key = options[:apiclient_key] || WechatPay.apiclient_key
         result = apiclient_key.sign('SHA256', string) # 商户私钥的SHA256-RSA2048签名
         Base64.strict_encode64(result) # Base64处理
