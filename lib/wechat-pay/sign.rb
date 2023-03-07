@@ -167,11 +167,11 @@ module WechatPay
       # end
       # ```
       #
-      def decrypt_the_encrypt_params(associated_data:, nonce:, ciphertext:)
+      def decrypt_the_encrypt_params(associated_data:, nonce:, ciphertext:, mch_key:)
         # https://contest-server.cs.uchicago.edu/ref/ruby_2_3_1_stdlib/libdoc/openssl/rdoc/OpenSSL/Cipher.html
         tag_length = 16
         decipher = OpenSSL::Cipher.new('aes-256-gcm').decrypt
-        decipher.key = WechatPay.mch_key
+        decipher.key = mch_key
         decipher.iv = nonce
         signature = Base64.strict_decode64(ciphertext)
         length = signature.length

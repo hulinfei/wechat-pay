@@ -20,7 +20,7 @@ module WechatPay
         url = '/v3/ecommerce/profitsharing/orders'
         method = 'POST'
         params = {
-          appid: WechatPay.app_id
+          appid: options[:weixin_appid] || WechatPay.app_id
         }.merge(params)
 
         payload_json = params.to_json
