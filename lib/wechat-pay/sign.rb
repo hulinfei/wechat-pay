@@ -203,7 +203,7 @@ module WechatPay
         timestamp = Time.now.to_i
         nonce_str = SecureRandom.hex
         string = build_string(method, url, timestamp, nonce_str, json_body)
-        signature = sign_string(string)
+        signature = sign_string(string, options)
         mch_id = WechatPay.mch_id || options.delete(:meh_id)
         apiclient_serial_no = options.delete(:apiclient_serial_no) || WechatPay.apiclient_serial_no
 
@@ -220,8 +220,9 @@ module WechatPay
         "WECHATPAY2-SHA256-RSA2048 #{params_string}"
       end
 
-      def sign_string(string)
-        result = WechatPay.apiclient_key.sign('SHA256', string) # 商户私钥的SHA256-RSA2048签名
+      def sign_string(string, options: {})
+        apiclient_key = options[:apiclient_key] || WechatPay.apiclient_key
+        result = apiclient_key.sign('SHA256', string) # 商户私钥的SHA256-RSA2048签名
         Base64.strict_encode64(result) # Base64处理
       end
 
