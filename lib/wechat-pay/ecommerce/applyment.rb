@@ -64,7 +64,7 @@ module WechatPay
     # WechatPay::Ecommerce.applyment(params)
     # ```
     #
-    def self.applyment(payload)
+    def self.applyment(payload, options)
       url = '/v3/ecommerce/applyments/'
       method = 'POST'
 
@@ -76,7 +76,7 @@ module WechatPay
         for_sign: payload_json,
         payload: payload_json,
         extra_headers: {
-          'Wechatpay-Serial' => WechatPay.platform_serial_no
+          'Wechatpay-Serial' => options.delete(:platform_serial_no) || WechatPay.platform_serial_no
         }
       )
     end
@@ -94,7 +94,7 @@ module WechatPay
     # WechatPay::Ecommerce.query_applyment(applyment_id: '200040444455566667') # by_applyment_id
     # ```
     #
-    def self.query_applyment(params)
+    def self.query_applyment(params, options)
       if params[:applyment_id]
         applyment_id = params.delete(:applyment_id)
         url = "/v3/ecommerce/applyments/#{applyment_id}"
@@ -109,7 +109,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -123,7 +124,7 @@ module WechatPay
     # WechatPay::Ecommerce.certificates
     # ```
     #
-    def self.certificates
+    def self.certificates(options)
       url = '/v3/certificates'
       method = 'GET'
 
@@ -132,7 +133,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -148,7 +150,7 @@ module WechatPay
     # WechatPay::Ecommerce.query_settlement(sub_mchid: '16000000')
     # ```
     #
-    def self.query_settlement(params)
+    def self.query_settlement(params, options)
       sub_mchid = params.delete(:sub_mchid)
       url = "/v3/apply4sub/sub_merchants/#{sub_mchid}/settlement"
       method = 'GET'
@@ -158,7 +160,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -174,7 +177,7 @@ module WechatPay
     # WechatPay::Ecommerce.modify_settlement(sub_mchid: '15000000', account_type: 'ACCOUNT_TYPE_PRIVATE', account_bank: '工商银行', bank_address_code: '110000', account_number: WechatPay::Sign.sign_important_info('755555555'))
     # ```
     #
-    def self.modify_settlement(params)
+    def self.modify_settlement(params, options)
       sub_mchid = params.delete(:sub_mchid)
       url = "/v3/apply4sub/sub_merchants/#{sub_mchid}/modify-settlement"
       method = 'POST'
@@ -187,7 +190,7 @@ module WechatPay
         for_sign: payload_json,
         payload: payload_json,
         extra_headers: {
-          'Wechatpay-Serial' => WechatPay.platform_serial_no
+          'Wechatpay-Serial' => WechatPay.platform_serial_no || options[:platform_serial_no]
         }
       )
     end

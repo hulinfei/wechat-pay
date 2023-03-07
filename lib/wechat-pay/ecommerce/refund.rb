@@ -15,7 +15,7 @@ module WechatPay
     # WechatPay::Ecommerce.invoke_refund(sub_mchid: '1600000', transaction_id: '4323400972202104305131070170', total: 1, refund: 1, description: '退款', out_refund_no: 'R10000') # by transaction_id
     # WechatPay::Ecommerce.invoke_refund(sub_mchid: '1608977559', total: 1, refund: 1, description: '退款', out_trade_no: 'N202104302474', out_refund_no: 'R10000') # by out_trade_no
     # ```
-    def self.invoke_refund(params)
+    def self.invoke_refund(params, options)
       url = '/v3/ecommerce/refunds/apply'
       method = 'POST'
       amount = {
@@ -26,14 +26,15 @@ module WechatPay
 
       params = {
         amount: amount,
-        sp_appid: WechatPay.app_id
+        sp_appid: options[:app_id] || WechatPay.app_id
       }.merge(params)
 
       make_request(
         path: url,
         method: method,
         for_sign: params.to_json,
-        payload: params.to_json
+        payload: params.to_json,
+        options: options
       )
     end
 
@@ -50,7 +51,7 @@ module WechatPay
     # WechatPay::Ecommerce.query_refund(sub_mchid: '16000000', refund_id: '50000000382019052709732678859')
     # ```
     #
-    def self.query_refund(params)
+    def self.query_refund(params, options)
       if params[:refund_id]
         params.delete(:out_refund_no)
         refund_id = params.delete(:refund_id)
@@ -62,7 +63,7 @@ module WechatPay
       end
 
       params = params.merge({
-                              sp_mchid: WechatPay.mch_id
+                              sp_mchid: options[:mch_id] || WechatPay.mch_id
                             })
 
       method = 'GET'
@@ -74,7 +75,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -90,7 +92,7 @@ module WechatPay
     # WechatPay::Ecommerce.return_advance_refund(refund_id: '50300908092021043008398036516', sub_mchid: '160000')
     # ```
     #
-    def self.return_advance_refund(params)
+    def self.return_advance_refund(params, options)
       refund_id = params.delete(:refund_id)
       url = "/v3/ecommerce/refunds/#{refund_id}/return-advance"
       method = 'POST'
@@ -99,7 +101,8 @@ module WechatPay
         path: url,
         method: method,
         for_sign: params.to_json,
-        payload: params.to_json
+        payload: params.to_json,
+        options: options
       )
     end
 
@@ -116,7 +119,7 @@ module WechatPay
     # WechatPay::Ecommerce.query_refund(sub_mchid: '16000000', refund_id: '50000000382019052709732678859')
     # ```
     #
-    def self.query_return_advance_refund(params)
+    def self.query_return_advance_refund(params, options)
       refund_id = params.delete(:refund_id)
       path = "/v3/ecommerce/refunds/#{refund_id}/return-advance"
       method = 'GET'
@@ -128,7 +131,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
   end

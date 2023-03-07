@@ -31,9 +31,9 @@ module WechatPay
     #   @!scope class
     def self.define_transaction_method(key, value, _document)
       const_set("INVOKE_TRANSACTIONS_IN_#{key.upcase}_FIELDS",
-                %i[sub_mchid description out_trade_no notify_url amount].freeze)
-      define_singleton_method("invoke_transactions_in_#{key}") do |params|
-        transactions_method_by_suffix(value, params)
+                %i[sub_mchid description out_trade_no notify_url amount settle_info].freeze)
+      define_singleton_method("invoke_transactions_in_#{key}") do |params, options|
+        transactions_method_by_suffix(value, params, options)
       end
     end
 
@@ -54,7 +54,7 @@ module WechatPay
     # WechatPay::Ecommerce.query_order(sub_mchid: '16000008', out_trade_no: 'N202104302474') # by out_trade_no
     # ```
     #
-    def self.query_order(params)
+    def self.query_order(params, options)
       if params[:transaction_id]
         params.delete(:out_trade_no)
         transaction_id = params.delete(:transaction_id)
@@ -66,7 +66,7 @@ module WechatPay
       end
 
       params = params.merge({
-                              sp_mchid: WechatPay.mch_id
+                              sp_mchid: options.delete(:mch_id) || WechatPay.mch_id
                             })
 
       method = 'GET'
@@ -78,7 +78,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -92,7 +93,7 @@ module WechatPay
     # WechatPay::Ecommerce.close_order(sub_mchid: '16000008', out_trade_no: 'N3344445')
     # ```
     #
-    def self.close_order(params)
+    def self.close_order(params, options)
       out_trade_no = params.delete(:out_trade_no)
       url = "/v3/pay/partner/transactions/out-trade-no/#{out_trade_no}/close"
       params = params.merge({
@@ -105,20 +106,21 @@ module WechatPay
         method: method,
         path: url,
         for_sign: params.to_json,
-        payload: params.to_json
+        payload: params.to_json,
+        options: options
       )
     end
 
     class << self
       private
 
-      def transactions_method_by_suffix(suffix, params)
+      def transactions_method_by_suffix(suffix, params, options)
         url = "/v3/pay/partner/transactions/#{suffix}"
         method = 'POST'
 
         params = {
-          sp_appid: WechatPay.app_id,
-          sp_mchid: WechatPay.mch_id
+          sp_appid: options.delete(:appid) || WechatPay.app_id,
+          sp_mchid: options.delete(:mch_id) || WechatPay.mch_id
         }.merge(params)
 
         payload_json = params.to_json
@@ -127,7 +129,8 @@ module WechatPay
           method: method,
           path: url,
           for_sign: payload_json,
-          payload: payload_json
+          payload: payload_json,
+          options: options
         )
       end
     end
