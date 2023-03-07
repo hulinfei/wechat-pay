@@ -31,7 +31,7 @@ module WechatPay
     #   @!scope class
     def self.define_transaction_method(key, value, _document)
       const_set("INVOKE_TRANSACTIONS_IN_#{key.upcase}_FIELDS",
-                %i[sub_mchid description out_trade_no notify_url amount settle_info].freeze)
+                %i[sub_mchid description out_trade_no notify_url amount settle_info].freeze, options)
       define_singleton_method("invoke_transactions_in_#{key}") do |params, options|
         transactions_method_by_suffix(value, params, options)
       end
@@ -66,7 +66,7 @@ module WechatPay
       end
 
       params = params.merge({
-                              sp_mchid: options.delete(:mch_id) || WechatPay.mch_id
+                              sp_mchid: options[:mch_id] || WechatPay.mch_id
                             })
 
       method = 'GET'
