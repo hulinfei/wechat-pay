@@ -205,7 +205,7 @@ module WechatPay
         string = build_string(method, url, timestamp, nonce_str, json_body)
         signature = sign_string(string, options)
         mch_id = WechatPay.mch_id || options.delete(:meh_id)
-        apiclient_serial_no = options.delete(:apiclient_serial_no) || WechatPay.apiclient_serial_no
+        apiclient_serial_no = options.delete(:apiclient_serial_no)
 
         params = {
           mchid: mch_id,
