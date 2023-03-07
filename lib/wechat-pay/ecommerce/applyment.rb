@@ -190,7 +190,7 @@ module WechatPay
         for_sign: payload_json,
         payload: payload_json,
         extra_headers: {
-          'Wechatpay-Serial' => WechatPay.platform_serial_no || options[:platform_serial_no]
+          'Wechatpay-Serial' => options.delete(:platform_serial_no) || WechatPay.platform_serial_no
         }
       )
     end
