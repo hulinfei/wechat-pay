@@ -344,7 +344,7 @@ module WechatPay
         }
       )
     end
-    
+
     # 商户转账到零钱
     def self.batches(params, options = {})
       url = '/v3/transfer/batches'

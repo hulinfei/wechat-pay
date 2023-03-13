@@ -3,6 +3,8 @@
 module WechatPay
   # 分账相关
   module Profitsharing
+    include WechatPayHelper
+
     class << self
       REQUEST_PROFITSHARING_FIELDS = %i[out_trade_no transaction_id sub_mchid out_order_no receivers unfreeze_unsplit].freeze # :nodoc:
       #
