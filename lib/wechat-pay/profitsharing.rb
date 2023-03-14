@@ -235,6 +235,25 @@ module WechatPay
           options: options
         )
       end
+
+      # 查询最大分账比例
+      # Document: https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_7.shtml
+      #
+      # Example:
+      #
+      # ``` ruby
+      # WechatPay::Profitsharing.merchant_configs(sub_mchid: '160000')
+      def merchant_configs
+        sub_mchid = params.delete(:sub_mchid)
+        url = "/v3/profitsharing/merchant-configs/#{sub_mchid}"
+        method = 'get'
+
+        make_request(
+          method: method,
+          path: url,
+          options: options
+        )
+      end
     end
   end
 end
