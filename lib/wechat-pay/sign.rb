@@ -204,8 +204,8 @@ module WechatPay
         nonce_str = SecureRandom.hex
         string = build_string(method, url, timestamp, nonce_str, json_body)
         signature = sign_string(string, options)
-        mch_id = options.delete(:mch_id) || WechatPay.mch_id
-        apiclient_serial_no = options.delete(:apiclient_serial_no)
+        mch_id = options[:mch_id] || WechatPay.mch_id
+        apiclient_serial_no = options[:apiclient_serial_no]
 
         params = {
           mchid: mch_id,
