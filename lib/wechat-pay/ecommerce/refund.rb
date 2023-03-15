@@ -26,7 +26,7 @@ module WechatPay
 
       params = {
         amount: amount,
-        sp_appid: options[:app_id] || WechatPay.app_id
+        sp_appid: options[:appid] || WechatPay.app_id
       }.merge(params)
 
       make_request(
