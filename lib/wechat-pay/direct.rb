@@ -238,7 +238,7 @@ module WechatPay
     # WechatPay::Direct.invoke_refund(transaction_id: '4323400972202104305131070170', total: 1, refund: 1, out_refund_no: 'R10000')
     # WechatPay::Direct.invoke_refund(out_trade_no: 'N2021', total: 1, refund: 1, out_refund_no: 'R10000').body
     # ```
-    def self.invoke_refund(params)
+    def self.invoke_refund(params, options = {})
       url = '/v3/refund/domestic/refunds'
       method = 'POST'
       amount = {
@@ -255,7 +255,8 @@ module WechatPay
         path: url,
         method: method,
         for_sign: params.to_json,
-        payload: params.to_json
+        payload: params.to_json,
+        options: options
       )
     end
 
@@ -271,7 +272,7 @@ module WechatPay
     # WechatPay::Direct.query_refund(out_refund_no: 'R10000')
     # ```
     #
-    def self.query_refund(params)
+    def self.query_refund(params, options = {})
       out_refund_no = params.delete(:out_refund_no)
       url = "/v3/refund/domestic/refunds/#{out_refund_no}"
 
@@ -282,7 +283,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -362,13 +364,13 @@ module WechatPay
     class << self
       private
 
-      def direct_transactions_method_by_suffix(suffix, params)
+      def direct_transactions_method_by_suffix(suffix, params, options = {})
         url = "/v3/pay/transactions/#{suffix}"
         method = 'POST'
 
         params = {
-          mchid: WechatPay.mch_id,
-          appid: WechatPay.app_id
+          mchid: options[:mch_id] || WechatPay.mch_id,
+          appid: options[:appid] || WechatPay.app_id
         }.merge(params)
 
         payload_json = params.to_json
@@ -377,7 +379,8 @@ module WechatPay
           method: method,
           path: url,
           for_sign: payload_json,
-          payload: payload_json
+          payload: payload_json,
+          options: options
         )
       end
     end
