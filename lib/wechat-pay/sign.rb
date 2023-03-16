@@ -40,10 +40,10 @@ module WechatPay
       # # => params for invoking the wechat pay in app
       # ```
 
-      def generate_app_payment_params_from_prepay_id_and_appid(appid, prepay_id)
+      def generate_app_payment_params_from_prepay_id_and_appid(options, prepay_id)
         timestamp = Time.now.to_i.to_s
         noncestr = SecureRandom.hex
-        string = build_app_paysign_string(appid, timestamp, noncestr, prepay_id)
+        string = build_app_paysign_string(options[:appid], timestamp, noncestr, prepay_id)
 
         {
           appId: appid,
@@ -52,7 +52,7 @@ module WechatPay
           nonceStr: noncestr,
           prepayId: prepay_id,
           packageValue: 'Sign=WXPay',
-          sign: sign_string(string)
+          sign: sign_string(string, options)
         }.stringify_keys
       end
 
