@@ -134,15 +134,15 @@ module WechatPay
       #
       # ``` ruby
       # string = 'Ruby'
-      # WechatPay::Sign.sign_important_info(string)
+      # WechatPay::Sign.sign_important_info(string, options)
       # ```
       #
       # ``` ruby
       # # result
       # "K0MK7g3laREAQ4HIlpIndVmFdz4IyxxiVp42hXFx2CzWRB1fn85ANBxnQXESq91vJ1P9mCt94cHZDoshlEOJRkE1KvcxpBCnG3ghIqiSsLKdLZ3ytO94GBDzCt8nsq+vJKXJbK2XuL9p5h0KYGKZyjt2ydU9Ig6daWTpZH8lAKIsLzPTsaUtScuw/v3M/7t8/4py8N0MOLKbDBDnR5Q+MRHbEWI9nCA3HTAWsSerIIgE7igWnzybxsUzhkV8m49P/Shr2zh6yJAlEnyPLFmQG7GuUaYwDTSLKOWzzPYwxMcucWQha2krC9OlwnZJe6ZWUAI3s4ej4kFRfheOYywRoQ=="
       # ```
-      def sign_important_info(string)
-        platform_public_key = WechatPay.platform_cert.public_key
+      def sign_important_info(string, options)
+        platform_public_key = options[:platform_cert].public_key
         Base64.strict_encode64(platform_public_key.public_encrypt(string, OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING))
       end
 
