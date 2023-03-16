@@ -88,16 +88,16 @@ module WechatPay
       # WechatPay::Sign.generate_payment_params_from_prepay_id_and_appid(appid, prepay_id)
       # # => params for invoking the wechat pay in miniprogram
       # ```
-      def generate_payment_params_from_prepay_id_and_appid(appid, prepay_id)
+      def generate_payment_params_from_prepay_id_and_appid(options, prepay_id)
         timestamp = Time.now.to_i.to_s
         noncestr = SecureRandom.hex
-        string = build_paysign_string(appid, timestamp, noncestr, prepay_id)
+        string = build_paysign_string(options[:appid], timestamp, noncestr, prepay_id)
 
         {
           timeStamp: timestamp,
           nonceStr: noncestr,
           package: "prepay_id=#{prepay_id}",
-          paySign: sign_string(string),
+          paySign: sign_string(string, options),
           signType: 'RSA'
         }.stringify_keys
       end
