@@ -201,6 +201,9 @@ module WechatPay
           path: url,
           for_sign: payload_json,
           payload: payload_json,
+          extra_headers: {
+            'Wechatpay-Serial' => options[:platform_serial_no]
+          },
           options: options
         )
       end
