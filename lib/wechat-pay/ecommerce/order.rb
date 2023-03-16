@@ -97,7 +97,7 @@ module WechatPay
       out_trade_no = params.delete(:out_trade_no)
       url = "/v3/pay/partner/transactions/out-trade-no/#{out_trade_no}/close"
       params = params.merge({
-                              sp_mchid: WechatPay.mch_id
+                              sp_mchid: options[:mch_id]
                             })
 
       method = 'POST'
@@ -119,8 +119,8 @@ module WechatPay
         method = 'POST'
         Rails.logger.info "=========#{options}"
         params = {
-          sp_appid: options.delete(:appid) || WechatPay.app_id,
-          sp_mchid: options.delete(:mch_id) || WechatPay.mch_id
+          sp_appid: options[:appid] || WechatPay.app_id,
+          sp_mchid: options[:mch_id] || WechatPay.mch_id
         }.merge(params)
 
         payload_json = params.to_json
