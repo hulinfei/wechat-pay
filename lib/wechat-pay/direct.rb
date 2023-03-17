@@ -277,12 +277,12 @@ module WechatPay
       url = "/v3/refund/domestic/refunds/#{out_refund_no}"
 
       method = 'GET'
+      query = build_query(params)
+      url = "#{url}?#{query}"
 
       make_request(
         method: method,
         path: url,
-        for_sign: params.to_json,
-        payload: params.to_json,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
         },
