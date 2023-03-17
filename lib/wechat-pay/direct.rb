@@ -281,6 +281,8 @@ module WechatPay
       make_request(
         method: method,
         path: url,
+        for_sign: params.to_json,
+        payload: params.to_json,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
         },
