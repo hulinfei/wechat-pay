@@ -53,8 +53,8 @@ module WechatPay
       #
       def query_profitsharing(params, options)
         method = 'GET'
-        query = build_query(params)
         out_order_no = params.delete(:out_order_no)
+        query = build_query(params)
         path = "/v3/profitsharing/orders/#{out_order_no}"
         url = "#{path}?#{query}"
 
