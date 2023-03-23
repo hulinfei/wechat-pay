@@ -78,15 +78,15 @@ module WechatPay
     #     notify_url: 'the_url'
     #   }
     #
-    #   WechatPay::Direct.invoke_combine_transactions_in_$1(params)
+    #   WechatPay::Direct.invoke_combine_transactions_in_$1(params, options)
     #   ```
     #   @!method invoke_combine_transactions_in_$1
     #   @!scope class
     def self.define_combine_transaction_method(key, _value, _document)
       const_set("INVOKE_COMBINE_TRANSACTIONS_IN_#{key.upcase}_FIELDS",
                 %i[combine_out_trade_no scene_info sub_orders notify_url].freeze)
-      define_singleton_method("invoke_combine_transactions_in_#{key}") do |params|
-        WechatPay::Ecommerce.send("invoke_combine_transactions_in_#{key}", params)
+      define_singleton_method("invoke_combine_transactions_in_#{key}") do |params, options|
+        WechatPay::Ecommerce.send("invoke_combine_transactions_in_#{key}", params, options)
       end
     end
 
@@ -135,13 +135,13 @@ module WechatPay
     # ``` ruby
     # WechatPay::Direct.close_combine_order(combine_out_trade_no: 'C202104302474')
     # ```
-    def self.close_combine_order(params)
+    def self.close_combine_order(params, options = {})
       combine_out_trade_no = params.delete(:combine_out_trade_no)
 
       url = "/v3/combine-transactions/out-trade-no/#{combine_out_trade_no}/close"
 
       payload = {
-        combine_appid: WechatPay.app_id
+        combine_appid: options[:appid]
       }.merge(params)
 
       payload_json = payload.to_json
@@ -152,7 +152,8 @@ module WechatPay
         method: method,
         for_sign: payload_json,
         payload: payload_json,
-        path: url
+        path: url,
+        options: options
       )
     end
 
@@ -169,7 +170,7 @@ module WechatPay
     # WechatPay::Direct.query_order(out_trade_no: 'N202104302474') # by out_trade_no
     # ```
     #
-    def self.query_order(params)
+    def self.query_order(params, options = {})
       if params[:transaction_id]
         params.delete(:out_trade_no)
         transaction_id = params.delete(:transaction_id)
@@ -181,7 +182,7 @@ module WechatPay
       end
 
       params = params.merge({
-                              mchid: WechatPay.mch_id
+                              mchid: options[:mch_id]
                             })
 
       method = 'GET'
@@ -193,7 +194,8 @@ module WechatPay
         path: url,
         extra_headers: {
           'Content-Type' => 'application/x-www-form-urlencoded'
-        }
+        },
+        options: options
       )
     end
 
@@ -209,11 +211,11 @@ module WechatPay
     # WechatPay::Direct.close_order(out_trade_no: 'N3344445')
     # ```
     #
-    def self.close_order(params)
+    def self.close_order(params, options = {})
       out_trade_no = params.delete(:out_trade_no)
       url = "/v3/pay/transactions/out-trade-no/#{out_trade_no}/close"
       params = params.merge({
-                              mchid: WechatPay.mch_id
+                              mchid: options[:mch_id]
                             })
 
       method = 'POST'
@@ -222,7 +224,8 @@ module WechatPay
         method: method,
         path: url,
         for_sign: params.to_json,
-        payload: params.to_json
+        payload: params.to_json,
+        options: options
       )
     end
 
@@ -371,8 +374,8 @@ module WechatPay
         method = 'POST'
 
         params = {
-          mchid: options[:mch_id] || WechatPay.mch_id,
-          appid: options[:appid] || WechatPay.app_id
+          mchid: options[:mch_id],
+          appid: options[:appid]
         }.merge(params)
 
         payload_json = params.to_json
