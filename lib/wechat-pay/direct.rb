@@ -366,6 +366,20 @@ module WechatPay
       )
     end
 
+    # params ={out_batch_no: out_batch_no, need_query_detail: need_query_detail}
+    # 查询商户转账到零钱结果
+    def self.batches_query(params, options = {})
+      out_batch_no = params.delete(:out_batch_no)
+      method = 'GET'
+      query = build_query(params)
+      url = "/v3/transfer/batches/out-batch-no/#{out_batch_no}?#{query}"
+      make_request(
+        method: method,
+        path: url,
+        options: options
+      )
+    end
+
     class << self
       private
 
